@@ -1,0 +1,73 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+public class PaymentAutomation {
+
+    WebDriver driver;
+    
+    @BeforeMethod
+    public void setUp() {
+        // Set up the ChromeDriver
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
+        driver = new ChromeDriver();
+    }
+    
+    @AfterMethod
+    public void tearDown() {
+        // Close the browser
+        driver.quit();
+    }
+    
+    @Test(dataProvider = "paymentData")
+    public void testPayment(String paymentMethod, String cardNumber, String expiryDate, String cvv) {
+        // Navigate to the payment page
+        driver.get("https://example.com/payment");
+        
+        // Select the payment method
+        WebElement paymentMethodElement = driver.findElement(By.xpath("//label[contains(text(),'" + paymentMethod + "')]"));
+        paymentMethodElement.click();
+        
+        // Fill in the payment details
+        WebElement cardNumberElement = driver.findElement(By.id("cardNumber"));
+        cardNumberElement.sendKeys(cardNumber);
+        
+        WebElement expiryDateElement = driver.findElement(By.id("expiryDate"));
+        expiryDateElement.sendKeys(expiryDate);
+        
+        WebElement cvvElement = driver.findElement(By.id("cvv"));
+        cvvElement.sendKeys(cvv);
+        
+        // Submit the payment
+        WebElement submitButton = driver.findElement(By.id("submit"));
+        submitButton.click();
+        
+        // Wait for the OTP page to appear
+        // TODO: Add code to wait for the page to load
+        
+        // Fill in the OTP and submit the payment
+        WebElement otpElement = driver.findElement(By.id("otp"));
+        otpElement.sendKeys("123456");
+        
+        WebElement otpSubmitButton = driver.findElement(By.id("submit"));
+        otpSubmitButton.click();
+        
+        // TODO: Add code to verify that the payment was successful
+    }
+    
+    @DataProvider(name = "paymentData")
+    public Object[][] testData() {
+        // Define the test data
+        Object[][] data = new Object[][] {
+            { "Credit Card", "1234567812345678", "12/24", "123" },
+            { "Debit Card", "2345678923456789", "01/23", "456" },
+            { "Net Banking", "ABC123", "01/23", "789" }
+        };
+        return data;
+    }
+}
